@@ -3,9 +3,18 @@ import os
 
 public struct Log {
     private let bundleIdentifier: String?
+    private let environment: Environment
+    private let monitoringService: Monitoring?
     
-    public init(bundle: Bundle?) {
+    public init(urlString: String?, environment: Environment, bundle: Bundle?) {
+        self.environment = environment
         self.bundleIdentifier = bundle?.bundleIdentifier
+        
+        if let urlString = urlString {
+            self.monitoringService = MonitorService(dsn: urlString, environment: environment)
+        } else {
+            self.monitoringService = nil
+        }
     }
 }
 
@@ -13,11 +22,13 @@ public struct Log {
 
 extension Log: Logger {
     public func logError(_ message: String, category: LogCategoryType) {
-        os_log(.error, log: systemLog(category: category), "%@", message as CVarArg)
+        log(type: .error, message: message, category: category)
+        
+        monitoringService?.log(message: message, category: category)
     }
     
     public func logInfo(_ message: String, category: LogCategoryType) {
-        os_log(.info, log: systemLog(category: category), "%@", message as CVarArg)
+        log(type: .info, message: message, category: category)
     }
 }
 
@@ -30,5 +41,9 @@ private extension Log {
         }
         
         return .default
+    }
+    
+    func log(type: OSLogType, message: String, category: LogCategoryType) {
+        os_log(type, log: systemLog(category: category), "%@", message as CVarArg)
     }
 }

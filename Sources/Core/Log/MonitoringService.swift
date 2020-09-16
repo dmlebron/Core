@@ -9,7 +9,9 @@ import Foundation
 import Sentry
 
 public protocol Monitoring {
-    init(dsn: String, isDebug: Bool, environment: Environment)
+    init(dsn: String, environment: Environment)
+    
+    func log(message: String, category: LogCategoryType)
 }
 
 public enum Environment {
@@ -27,34 +29,29 @@ public enum Environment {
     }
 }
 
-public final class MonitorService {
+public final class MonitorService: Monitoring {
     private let environment: Environment
-    private let log: Logger
     
-    public init(dsn: String, isDebug: Bool, environment: Environment, bundle: Bundle?) {
+    public init(dsn: String, environment: Environment) {
         self.environment = environment
-        
-        self.log = Log(bundle: bundle)
         
         SentrySDK.start { options in
             options.dsn = dsn
-            options.debug = isDebug as NSNumber
+            options.debug = true
         }
     }
     
-    public func log() {
-        let event = Event()
-        
+    public func log(message: String, category: LogCategoryType) {
         let event = Event(level: .error)
-        
+
         event.platform = "cocoa"
-        
+
         event.environment = environment.name
-        
-//        event.transaction = category.rawValue
-        
-//        event.message = detailedMessage
-        
+
+        event.transaction = category.rawValue
+
+        event.message = message
+
         SentrySDK.capture(event: event)
     }
 }
