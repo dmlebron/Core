@@ -15,8 +15,8 @@ public protocol Monitoring {
 }
 
 public enum Environment: String {
-    case debug
-    case release
+    case development
+    case production
     
     fileprivate var name: String {
         return self.rawValue.uppercased()
