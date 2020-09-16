@@ -14,18 +14,12 @@ public protocol Monitoring {
     func log(message: String, category: LogCategoryType)
 }
 
-public enum Environment {
+public enum Environment: String {
     case debug
-    case release(String)
+    case release
     
     fileprivate var name: String {
-        switch self {
-        case .debug:
-            return "DEBUG"
-            
-        case .release(let version):
-            return "RELEASE - \(version)"
-        }
+        return self.rawValue.uppercased()
     }
 }
 
