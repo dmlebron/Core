@@ -10,6 +10,7 @@ public final class NotificationsMonitor: NotificationsMonitoring {
     public enum Notification: CaseIterable {
         case deviceEnterBackground
         case deviceBecameActive
+        case deviceWillEnterForeground
 
         fileprivate var notification: NSNotification.Name {
             switch self {
@@ -18,6 +19,9 @@ public final class NotificationsMonitor: NotificationsMonitoring {
 
             case .deviceEnterBackground:
                 return UIApplication.didEnterBackgroundNotification
+
+            case .deviceWillEnterForeground:
+                return UIApplication.willEnterForegroundNotification
             }
         }
     }
@@ -46,6 +50,11 @@ private extension NotificationsMonitor {
         notificationSubject = notificationCenter
             .publisher(for: Notification.deviceEnterBackground.notification)
             .map { _ in Notification.deviceEnterBackground }
+            .eraseToAnyPublisher()
+
+        notificationSubject = notificationCenter
+            .publisher(for: Notification.deviceWillEnterForeground.notification)
+            .map { _ in Notification.deviceWillEnterForeground }
             .eraseToAnyPublisher()
     }
 }
