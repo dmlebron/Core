@@ -1,12 +1,6 @@
 import Sentry
 import Logs
 
-public protocol Monitoring {
-    init(dsn: String, environment: Environment)
-    
-    func log(message: String, category: LogCategoryType)
-}
-
 public final class MonitorService: Monitoring {
     private let environment: Environment
     
