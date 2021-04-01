@@ -43,7 +43,9 @@ private extension NetworkMonitor {
     func listenNetworkStatus() {
         monitor.start(queue: networkStatusQueue)
 
-        monitor.pathUpdateHandler = { [unowned self] val in
+        monitor.pathUpdateHandler = { [weak self] val in
+            guard let self = self else { return }
+
             self.status = val.status == .satisfied ? .online : .offline
 
             self.networkStatusPublisher.send(self.status)
