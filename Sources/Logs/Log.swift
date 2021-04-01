@@ -4,17 +4,12 @@ import os
 public struct Log {
     private let bundleIdentifier: String?
     private let environment: Environment
-    private let monitoringService: Monitoring?
+    private let monitoring: Monitoring?
     
-    public init(urlString: String?, environment: Environment, bundle: Bundle?) {
+    public init(urlString: String?, environment: Environment, bundle: Bundle?, monitoring: Monitoring?) {
         self.environment = environment
         self.bundleIdentifier = bundle?.bundleIdentifier
-        
-        if let urlString = urlString {
-            self.monitoringService = MonitorService(dsn: urlString, environment: environment)
-        } else {
-            self.monitoringService = nil
-        }
+        self.monitoring = monitoring
     }
 }
 
@@ -24,7 +19,7 @@ extension Log: Logger {
     public func logError(_ message: String, category: LogCategoryType) {
         log(type: .error, message: message, category: category)
         
-        monitoringService?.log(message: message, category: category)
+        monitoring?.log(message: message, category: category)
     }
     
     public func logInfo(_ message: String, category: LogCategoryType) {
