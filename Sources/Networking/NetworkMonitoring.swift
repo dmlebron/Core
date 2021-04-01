@@ -2,7 +2,6 @@ import UIKit
 import Combine
 import Network
 
-
 public protocol NetworkMonitoring {
     var networkStatusSubject: AnyPublisher<NetworkMonitor.Status, Never> { get }
     

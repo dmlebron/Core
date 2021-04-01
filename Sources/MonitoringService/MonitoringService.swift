@@ -1,26 +1,10 @@
-//
-//  MonitoringService.swift
-//  
-//
-//  Created by david martinez on 9/14/20.
-//
-
-import Foundation
 import Sentry
+import Logs
 
 public protocol Monitoring {
     init(dsn: String, environment: Environment)
     
     func log(message: String, category: LogCategoryType)
-}
-
-public enum Environment: String {
-    case development
-    case production
-    
-    fileprivate var name: String {
-        return self.rawValue.uppercased()
-    }
 }
 
 public final class MonitorService: Monitoring {

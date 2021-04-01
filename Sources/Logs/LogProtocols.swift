@@ -5,7 +5,6 @@ public protocol LogCategoryType {
 }
 
 public protocol Logger {
-//    init(bundle: Bundle?)
     
     /// Initilizer
     /// - Parameter urlString: optional url string. This url is where the logs should be sent.
